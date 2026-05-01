@@ -46,7 +46,8 @@ export function About() {
             <p className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
               À propos
             </p>
-            <p className="text-lg leading-relaxed text-foreground/90">{PROFILE.bio}</p>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Quelques mots sur moi</h2>
+            <p className="text-base leading-relaxed text-foreground/90 sm:text-lg">{PROFILE.bio}</p>
             <p className="text-sm text-muted-foreground">
               {PROFILE.location}
               {" · "}
