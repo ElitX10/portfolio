@@ -82,7 +82,7 @@ export function TimelineItem({
     const ringShadow = useTransform(progress, (p) => {
         const start = threshold - RING_FADE_RANGE / 2;
         const opacity = Math.min(1, Math.max(0, (p - start) / RING_FADE_RANGE));
-        return `0 0 0 4px color-mix(in srgb, var(--primary) ${(opacity * 100).toFixed(0)}%, transparent)`;
+        return `0 0 0 2px color-mix(in srgb, var(--foreground) ${(opacity * 100).toFixed(0)}%, transparent)`;
     });
 
     return (

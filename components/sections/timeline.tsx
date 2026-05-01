@@ -40,7 +40,7 @@ export function Timeline() {
                     <motion.div
                         aria-hidden
                         style={{ scaleY: lineScale }}
-                        className="absolute top-0 bottom-0 left-4 w-px origin-top -translate-x-px bg-primary md:left-1/2"
+                        className="absolute top-0 bottom-0 left-4 w-px origin-top -translate-x-px bg-foreground md:left-1/2"
                     />
 
                     <ol className="relative space-y-12 md:space-y-20">
