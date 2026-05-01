@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { TimelineItem } from "@/components/sections/timeline-item";
 import { TIMELINE } from "@/lib/data/experiences";
@@ -13,6 +13,11 @@ export function Timeline() {
         offset: ["start 70%", "end 60%"],
     });
     const lineScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
+    /**
+     * Id de l'item actuellement déplié, ou null si tous repliés. En déplier un
+     * referme automatiquement le précédent (comportement accordéon).
+     */
+    const [expandedId, setExpandedId] = useState<string | null>(null);
 
     return (
         <section id="parcours" className="border-t border-border/40 py-20 sm:py-24">
@@ -41,7 +46,16 @@ export function Timeline() {
                     <ol className="relative space-y-12 md:space-y-20">
                         {TIMELINE.map((item, index) => (
                             <li key={item.id}>
-                                <TimelineItem item={item} index={index} />
+                                <TimelineItem
+                                    item={item}
+                                    index={index}
+                                    isExpanded={expandedId === item.id}
+                                    onToggle={() =>
+                                        setExpandedId((current) =>
+                                            current === item.id ? null : item.id,
+                                        )
+                                    }
+                                />
                             </li>
                         ))}
                     </ol>
