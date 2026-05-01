@@ -9,6 +9,9 @@ import { computeYearsSince } from "@/lib/format";
 /** Début de carrière "monde pro" (hors stages) — utilisé pour les années d'expérience. */
 const PROFESSIONAL_DEBUT = "2019-09";
 
+/** Bonus à ajouter au compteur d'années pour intégrer les deux stages (≈ 13 mois). */
+const STAGE_BONUS_YEARS = 1;
+
 const PROFESSIONAL_EXPERIENCES = TIMELINE.filter((item) => item.type === "experience");
 
 const UNIQUE_TECHNOLOGIES = new Set(TIMELINE.flatMap((item) => item.stack)).size;
@@ -21,13 +24,18 @@ const initials = PROFILE.name
     .toUpperCase();
 
 export function About() {
-    const initialYears = computeYearsSince(PROFESSIONAL_DEBUT);
+    const initialYears = computeYearsSince(PROFESSIONAL_DEBUT) + STAGE_BONUS_YEARS;
 
     const stats: Array<{ value: ReactNode; label: string }> = [
         {
             value: (
                 <>
-                    <YearsSince startDate={PROFESSIONAL_DEBUT} initialYears={initialYears} /> ans
+                    <YearsSince
+                        startDate={PROFESSIONAL_DEBUT}
+                        initialYears={initialYears}
+                        bonusYears={STAGE_BONUS_YEARS}
+                    />{" "}
+                    ans
                 </>
             ),
             label: "d'expérience",
