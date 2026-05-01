@@ -73,13 +73,11 @@ export const TIMELINE: TimelineItem[] = [
     },
 
     {
-        // TODO: ajuste startDate/endDate selon la période réelle du projet.
         id: "nas-raspberry-pi",
         type: "projet",
         title: "NAS auto-hébergé sur Raspberry Pi",
         organization: "Projet personnel",
-        contractType: "Projet personnel",
-        startDate: "2023-01",
+        startDate: "2020-01",
         endDate: null,
         summary:
             "Mise en place d'un serveur NAS auto-hébergé sur Raspberry Pi avec OpenMediaVault, accessible à distance via OpenVPN.",

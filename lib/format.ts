@@ -50,9 +50,23 @@ export function computeDuration(start: string, end: string | null, now: Date = n
     return `${pluralize(years, "an", "ans")} ${pluralize(months, "mois", "mois")}`;
 }
 
-export function formatPeriod(start: string, end: string | null, now: Date = new Date()): string {
+export type FormatPeriodOptions = {
+    now?: Date;
+    /** Si false, masque la durée calculée (utile pour les projets perso). */
+    showDuration?: boolean;
+};
+
+export function formatPeriod(
+    start: string,
+    end: string | null,
+    options: FormatPeriodOptions = {},
+): string {
+    const { now = new Date(), showDuration = true } = options;
     const startStr = formatMonthYear(start);
     const endStr = end ? formatMonthYear(end) : "aujourd'hui";
+    if (!showDuration) {
+        return `${startStr} — ${endStr}`;
+    }
     const duration = computeDuration(start, end, now);
     return `${startStr} — ${endStr} · ${duration}`;
 }

@@ -1,5 +1,6 @@
 import { Briefcase, GraduationCap, type LucideIcon, Wrench } from "lucide-react";
 
+import { TimelinePeriod } from "@/components/sections/timeline-period";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import type { TimelineItem as TimelineItemModel, TimelineItemType } from "@/lib/data/experiences";
@@ -27,6 +28,8 @@ const TYPE_LABEL: Record<TimelineItemType, string> = {
 export function TimelineItem({ item, index }: { item: TimelineItemModel; index: number }) {
     const isLeft = index % 2 === 0;
     const Icon = ICON_BY_TYPE[item.type];
+    const showDuration = item.type !== "projet";
+    const initialPeriodText = formatPeriod(item.startDate, item.endDate, { showDuration });
 
     return (
         <article className="relative">
@@ -52,9 +55,12 @@ export function TimelineItem({ item, index }: { item: TimelineItemModel; index: 
                             <Badge variant="secondary" className="text-xs">
                                 {TYPE_LABEL[item.type]}
                             </Badge>
-                            <span className="font-mono text-xs text-muted-foreground">
-                                {formatPeriod(item.startDate, item.endDate)}
-                            </span>
+                            <TimelinePeriod
+                                initialText={initialPeriodText}
+                                startDate={item.startDate}
+                                endDate={item.endDate}
+                                showDuration={showDuration}
+                            />
                         </div>
 
                         <div>

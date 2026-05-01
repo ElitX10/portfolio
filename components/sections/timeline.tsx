@@ -22,7 +22,7 @@ export function Timeline() {
                         01 — Parcours
                     </p>
                     <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-                        De la formation à aujourd&apos;hui
+                        D&apos;aujourd&apos;hui à mes débuts
                     </h2>
                 </header>
 
