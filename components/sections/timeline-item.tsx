@@ -32,6 +32,16 @@ function getColorClass(item: TimelineItemModel): string {
     return "bg-indigo-400 text-zinc-950";
 }
 
+/**
+ * Lueur diffuse derrière la card, alignée sur la couleur du dot.
+ */
+function getGlowClass(item: TimelineItemModel): string {
+    if (item.type === "formation") return "bg-emerald-500/15 dark:bg-emerald-500/25";
+    if (item.type === "projet") return "bg-amber-500/15 dark:bg-amber-500/25";
+    if (item.contractType === "Stage") return "bg-emerald-500/15 dark:bg-emerald-500/25";
+    return "bg-indigo-500/15 dark:bg-indigo-500/25";
+}
+
 export function TimelineItem({
     item,
     index,
@@ -68,10 +78,17 @@ export function TimelineItem({
 
             <div
                 className={cn(
-                    "ml-14 md:ml-0 md:w-[calc(50%-2.5rem)]",
+                    "relative ml-14 md:ml-0 md:w-[calc(50%-2.5rem)]",
                     !isLeft && "md:ml-[calc(50%+2.5rem)]",
                 )}
             >
+                <div
+                    aria-hidden
+                    className={cn(
+                        "pointer-events-none absolute -inset-4 -z-10 rounded-3xl blur-2xl",
+                        getGlowClass(item),
+                    )}
+                />
                 <Card className="border-border/60 transition-colors hover:ring-primary/40">
                     <CardContent className="space-y-3">
                         <div className="flex flex-wrap items-center gap-2">
