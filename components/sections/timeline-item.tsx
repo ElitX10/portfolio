@@ -1,7 +1,4 @@
-"use client";
-
 import { Briefcase, GraduationCap, type LucideIcon, Wrench } from "lucide-react";
-import { motion, type Variants } from "motion/react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -27,11 +24,6 @@ const TYPE_LABEL: Record<TimelineItemType, string> = {
     projet: "Projet",
 };
 
-const cardVariants: Variants = {
-    hidden: { opacity: 0, y: 24 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
-};
-
 export function TimelineItem({ item, index }: { item: TimelineItemModel; index: number }) {
     const isLeft = index % 2 === 0;
     const Icon = ICON_BY_TYPE[item.type];
@@ -48,11 +40,7 @@ export function TimelineItem({ item, index }: { item: TimelineItemModel; index: 
                 <Icon className="size-4" />
             </div>
 
-            <motion.div
-                variants={cardVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+            <div
                 className={cn(
                     "ml-14 md:ml-0 md:w-[calc(50%-2.5rem)]",
                     !isLeft && "md:ml-[calc(50%+2.5rem)]",
@@ -123,7 +111,7 @@ export function TimelineItem({ item, index }: { item: TimelineItemModel; index: 
                         ) : null}
                     </CardContent>
                 </Card>
-            </motion.div>
+            </div>
         </article>
     );
 }
