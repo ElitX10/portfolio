@@ -55,3 +55,13 @@ export function formatPeriod(start: string, end: string | null, now: Date = new 
   const duration = computeDuration(start, end, now);
   return `${startStr} — ${endStr} · ${duration}`;
 }
+
+/**
+ * Nombre d'années entières écoulées depuis une date "YYYY-MM", arrondi à
+ * l'inférieur — utilisé pour les stats de la section "À propos".
+ */
+export function computeYearsSince(start: string, now: Date = new Date()): number {
+  const { year, month } = parseYearMonth(start);
+  const totalMonths = (now.getFullYear() - year) * 12 + (now.getMonth() + 1 - month);
+  return Math.max(0, Math.floor(totalMonths / 12));
+}
