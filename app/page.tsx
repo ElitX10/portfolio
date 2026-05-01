@@ -5,13 +5,13 @@ import { Skills } from "@/components/sections/skills";
 import { Timeline } from "@/components/sections/timeline";
 
 export default function HomePage() {
-  return (
-    <>
-      <Hero />
-      <About />
-      <Timeline />
-      <Skills />
-      <Contact />
-    </>
-  );
+    return (
+        <>
+            <Hero />
+            <About />
+            <Timeline />
+            <Skills />
+            <Contact />
+        </>
+    );
 }
