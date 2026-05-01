@@ -13,17 +13,22 @@ const ICON_BY_TYPE: Record<TimelineItemType, LucideIcon> = {
     projet: Wrench,
 };
 
-const COLOR_BY_TYPE: Record<TimelineItemType, string> = {
-    formation: "bg-emerald-400 text-zinc-950",
-    experience: "bg-indigo-400 text-zinc-950",
-    projet: "bg-amber-400 text-zinc-950",
-};
-
 const TYPE_LABEL: Record<TimelineItemType, string> = {
     formation: "Formation",
     experience: "Expérience",
     projet: "Projet",
 };
+
+/**
+ * Couleur de la pastille — les stages reprennent la couleur formation
+ * (vert émeraude) pour les distinguer visuellement des expériences en CDI/CDD.
+ */
+function getColorClass(item: TimelineItemModel): string {
+    if (item.type === "formation") return "bg-emerald-400 text-zinc-950";
+    if (item.type === "projet") return "bg-amber-400 text-zinc-950";
+    if (item.contractType === "Stage") return "bg-emerald-400 text-zinc-950";
+    return "bg-indigo-400 text-zinc-950";
+}
 
 export function TimelineItem({ item, index }: { item: TimelineItemModel; index: number }) {
     const isLeft = index % 2 === 0;
@@ -37,7 +42,7 @@ export function TimelineItem({ item, index }: { item: TimelineItemModel; index: 
                 aria-hidden
                 className={cn(
                     "absolute top-1 left-4 z-10 flex size-9 -translate-x-1/2 items-center justify-center rounded-full ring-4 ring-background md:left-1/2",
-                    COLOR_BY_TYPE[item.type],
+                    getColorClass(item),
                 )}
             >
                 <Icon className="size-4" />

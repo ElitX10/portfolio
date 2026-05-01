@@ -1,16 +1,15 @@
+import type { ReactNode } from "react";
+
+import { YearsSince } from "@/components/sections/years-since";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TIMELINE } from "@/lib/data/experiences";
 import { PROFILE } from "@/lib/data/profile";
 import { computeYearsSince } from "@/lib/format";
 
-const PROFESSIONAL_EXPERIENCES = TIMELINE.filter((item) => item.type === "experience");
+/** Début de carrière "monde pro" (hors stages) — utilisé pour les années d'expérience. */
+const PROFESSIONAL_DEBUT = "2019-09";
 
-const EARLIEST_EXPERIENCE_START =
-    PROFESSIONAL_EXPERIENCES.reduce<string | null>(
-        (earliest, item) =>
-            earliest === null || item.startDate < earliest ? item.startDate : earliest,
-        null,
-    ) ?? "2018-01";
+const PROFESSIONAL_EXPERIENCES = TIMELINE.filter((item) => item.type === "experience");
 
 const UNIQUE_TECHNOLOGIES = new Set(TIMELINE.flatMap((item) => item.stack)).size;
 
@@ -22,10 +21,17 @@ const initials = PROFILE.name
     .toUpperCase();
 
 export function About() {
-    const yearsOfExperience = computeYearsSince(EARLIEST_EXPERIENCE_START);
+    const initialYears = computeYearsSince(PROFESSIONAL_DEBUT);
 
-    const stats: Array<{ value: string; label: string }> = [
-        { value: `${yearsOfExperience}+ ans`, label: "d'expérience" },
+    const stats: Array<{ value: ReactNode; label: string }> = [
+        {
+            value: (
+                <>
+                    <YearsSince startDate={PROFESSIONAL_DEBUT} initialYears={initialYears} /> ans
+                </>
+            ),
+            label: "d'expérience",
+        },
         {
             value: String(PROFESSIONAL_EXPERIENCES.length),
             label: "expériences professionnelles",
