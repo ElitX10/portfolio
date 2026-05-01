@@ -49,6 +49,8 @@ export function Timeline() {
                                 <TimelineItem
                                     item={item}
                                     index={index}
+                                    total={TIMELINE.length}
+                                    progress={scrollYProgress}
                                     isExpanded={expandedId === item.id}
                                     onToggle={() =>
                                         setExpandedId((current) =>

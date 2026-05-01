@@ -1,6 +1,5 @@
-"use client";
-
 import { Briefcase, ChevronDown, GraduationCap, type LucideIcon, Wrench } from "lucide-react";
+import { type MotionValue, motion, useTransform } from "motion/react";
 
 import { TimelinePeriod } from "@/components/sections/timeline-period";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +7,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { TimelineItem as TimelineItemModel, TimelineItemType } from "@/lib/data/experiences";
 import { formatPeriod } from "@/lib/format";
 import { cn } from "@/lib/utils";
+
+/** Largeur de la fenêtre de fondu du ring autour de chaque dot. */
+const RING_FADE_RANGE = 0.08;
 
 const ICON_BY_TYPE: Record<TimelineItemType, LucideIcon> = {
     formation: GraduationCap,
@@ -38,20 +40,24 @@ function getColorClass(item: TimelineItemModel): string {
  * vite inaperçus ; le mode sombre garde une intensité plus mesurée.
  */
 function getGlowClass(item: TimelineItemModel): string {
-    if (item.type === "formation") return "bg-emerald-500/40 dark:bg-emerald-500/25";
-    if (item.type === "projet") return "bg-amber-500/40 dark:bg-amber-500/25";
-    if (item.contractType === "Stage") return "bg-emerald-500/40 dark:bg-emerald-500/25";
-    return "bg-indigo-500/40 dark:bg-indigo-500/25";
+    if (item.type === "formation") return "bg-emerald-500/50 dark:bg-emerald-500/25";
+    if (item.type === "projet") return "bg-amber-500/30 dark:bg-amber-500/25";
+    if (item.contractType === "Stage") return "bg-emerald-500/50 dark:bg-emerald-500/25";
+    return "bg-indigo-500/30 dark:bg-indigo-500/25";
 }
 
 export function TimelineItem({
     item,
     index,
+    total,
+    progress,
     isExpanded,
     onToggle,
 }: {
     item: TimelineItemModel;
     index: number;
+    total: number;
+    progress: MotionValue<number>;
     isExpanded: boolean;
     onToggle: () => void;
 }) {
@@ -66,17 +72,31 @@ export function TimelineItem({
     const hasStack = item.stack.length > 0;
     const hasDetails = hasHighlights || hasMissions || hasStack;
 
+    /**
+     * Le ring autour du dot s'éclaire en couleur primaire (indigo) au moment
+     * où la barre de progression de la timeline passe sur l'icône. Le seuil
+     * est réparti uniformément en fonction de l'index ; la transition se fait
+     * sur RING_FADE_RANGE pour un fondu doux.
+     */
+    const threshold = (index + 0.5) / total;
+    const ringShadow = useTransform(progress, (p) => {
+        const start = threshold - RING_FADE_RANGE / 2;
+        const opacity = Math.min(1, Math.max(0, (p - start) / RING_FADE_RANGE));
+        return `0 0 0 4px color-mix(in srgb, var(--primary) ${(opacity * 100).toFixed(0)}%, transparent)`;
+    });
+
     return (
         <article className="relative">
-            <div
+            <motion.div
                 aria-hidden
+                style={{ boxShadow: ringShadow }}
                 className={cn(
-                    "absolute top-1 left-4 z-10 flex size-9 -translate-x-1/2 items-center justify-center rounded-full ring-4 ring-background md:left-1/2",
+                    "absolute top-1 left-4 z-10 flex size-9 -translate-x-1/2 items-center justify-center rounded-full md:left-1/2",
                     getColorClass(item),
                 )}
             >
                 <Icon className="size-4" />
-            </div>
+            </motion.div>
 
             <div
                 className={cn(
