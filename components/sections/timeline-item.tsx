@@ -33,13 +33,15 @@ function getColorClass(item: TimelineItemModel): string {
 }
 
 /**
- * Lueur diffuse derrière la card, alignée sur la couleur du dot.
+ * Lueur diffuse derrière la card, alignée sur la couleur du dot. En mode
+ * clair l'opacité est plus forte car les pastels sur fond blanc passent
+ * vite inaperçus ; le mode sombre garde une intensité plus mesurée.
  */
 function getGlowClass(item: TimelineItemModel): string {
-    if (item.type === "formation") return "bg-emerald-500/15 dark:bg-emerald-500/25";
-    if (item.type === "projet") return "bg-amber-500/15 dark:bg-amber-500/25";
-    if (item.contractType === "Stage") return "bg-emerald-500/15 dark:bg-emerald-500/25";
-    return "bg-indigo-500/15 dark:bg-indigo-500/25";
+    if (item.type === "formation") return "bg-emerald-500/40 dark:bg-emerald-500/25";
+    if (item.type === "projet") return "bg-amber-500/40 dark:bg-amber-500/25";
+    if (item.contractType === "Stage") return "bg-emerald-500/40 dark:bg-emerald-500/25";
+    return "bg-indigo-500/40 dark:bg-indigo-500/25";
 }
 
 export function TimelineItem({
