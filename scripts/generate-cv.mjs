@@ -4,374 +4,272 @@ import {
     AlignmentType,
     BorderStyle,
     Document,
+    LevelFormat,
     Packer,
     Paragraph,
     ShadingType,
+    Tab,
     Table,
     TableCell,
     TableLayoutType,
     TableRow,
+    TabStopPosition,
+    TabStopType,
     TextRun,
     WidthType,
 } from "docx";
 
 // ============================================================================
-// DONNÉES (recopiées depuis lib/data — à mettre à jour si le portfolio change)
+// DONNÉES COMPACTES (à éditer si le contenu doit changer)
 // ============================================================================
 
 const PROFILE = {
     name: "Thomas Le Scolan",
     title: "Ingénieur développement logiciel",
     location: "Lyon, France",
-    availability: "Télétravail privilégié · jusqu'à 2j/semaine sur site",
+    availability: "Télétravail privilégié · 2j/semaine sur site max",
     email: "thomas.lescolan@sfr.fr",
     github: "github.com/ElitX10",
     linkedin: "linkedin.com/in/thomas-le-scolan-642618170",
 };
 
-// Petit profil de synthèse basé sur l'expérience réelle (à éditer dans Word).
 const PROFIL_SYNTHESE =
-    "Ingénieur en développement logiciel avec ~7 ans d'expérience, principalement chez PWA Assurance sur la migration d'un client lourd Java vers une application web moderne (AngularJS puis Next.js). Profil polyvalent : back-end Java/Spring, front-end React/Angular, tests automatisés et DevOps. Diplômé de l'UTT en management de projet logiciel.";
+    "Ingénieur full-stack ~7 ans d'expérience (Java/Spring & Next.js/React). Spécialisé dans la migration de systèmes legacy vers le web et la mise en place de stratégies de tests automatisés. À l'aise sur le cycle complet : conception, dev, tests, CI/CD, mise en production.";
 
-const TIMELINE = [
+const SKILLS = [
+    { label: "Front-end", items: "Next.js, React, TypeScript, Tailwind CSS, Angular, AngularJS" },
     {
-        type: "experience",
+        label: "Back-end",
+        items: "Java, Spring, Micronaut, Jersey, Hibernate, PostgreSQL, C# / .NET",
+    },
+    {
+        label: "Tests & DevOps",
+        items: "JUnit, Mockito, Cypress, Docker, GitLab CI, Git, Linux",
+    },
+];
+
+const EXPERIENCES = [
+    {
+        period: "Sept. 2022 – aujourd'hui",
         title: "Ingénieur développement logiciel",
         organization: "PWA Assurance",
-        contractType: "CDI",
+        contract: "CDI",
         location: "Lyon",
-        startDate: "2022-09",
-        endDate: null,
-        summary:
-            "Migration d'un client lourd Java 8 de gestion d'assurance vers une application web moderne (AngularJS puis Next.js) avec back-end Java. Implication transverse sur le code, les tests, le DevOps, l'agilité et l'outillage.",
-        highlights: [
-            "Migration et équivalence fonctionnelle entre le client lourd legacy et la nouvelle application web.",
-            "Montée en compétence sur des modules complexes : moteur d'algorithme de tarification, génération et gestion documentaire.",
-            "Refonte complète de la gestion des tâches (modèle, front-end et back-end).",
-            "Refonte complète de la gestion des emails (nouveau système de génération et migration vers le nouveau back-end).",
-            "Mise en place de l'infrastructure de tests : unitaires (JUnit, Mockito) et end-to-end (Cypress) sur le front Next.js.",
-            "Diagnostic d'incidents en production et déploiements sur les environnements de recette internes.",
-            "Mise en place de pipelines GitLab CI orientés tests.",
-            "Introduction de pratiques agiles pour accompagner la croissance de l'équipe.",
-            "Participation à l'introduction de Claude Code dans l'entreprise.",
+        bullets: [
+            "Migré un client lourd Java 8 de gestion d'assurance vers une application web (AngularJS puis Next.js) avec back-end Java.",
+            "Refondu intégralement les modules « gestion des tâches » et « gestion des emails » sur le full-stack.",
+            "Industrialisé la stratégie de tests : unitaires (JUnit, Mockito) et end-to-end (Cypress), pipelines GitLab CI dédiés.",
+            "Diagnostiqué les incidents de production, déployé sur les environnements de recette, accompagné l'introduction de Claude Code dans l'équipe.",
         ],
-        stack: [
-            "Next.js",
-            "React",
-            "TypeScript",
-            "Tailwind CSS",
-            "AngularJS",
-            "Java",
-            "Jersey",
-            "Hibernate",
-            "PostgreSQL",
-            "JUnit",
-            "Mockito",
-            "Cypress",
-            "Docker",
-            "GitLab CI",
-            "Git",
-        ],
+        stack: "Next.js · React · TypeScript · Java · Jersey · Hibernate · PostgreSQL · Cypress · Docker · GitLab CI",
     },
     {
-        type: "experience",
+        period: "Sept. 2019 – Juil. 2022",
         title: "Consultant en ingénierie logicielle",
         organization: "SOLUTEC",
-        contractType: "Temps plein",
+        contract: "Temps plein",
         location: "Villeurbanne",
-        startDate: "2019-09",
-        endDate: "2022-07",
-        summary:
-            "Quatre missions client successives sur des stacks variées, du back-end .NET au front-end Angular en passant par les architectures micro-frontends.",
-        missions: [
-            {
-                client: "Volvo Truck",
-                duration: "1 mois",
-                description:
-                    "Finalisation et livraison d'une application back-office .NET de gestion de pièces de camion. Adaptation rapide pour respecter un délai de livraison serré.",
-            },
-            {
-                client: "Refonte service d'océrisation",
-                duration: "3 mois",
-                description:
-                    "Migration d'un service back-end .NET d'océrisation de PDF vers un moteur d'OCR plus performant. Analyse de la documentation technique pour calibrer les paramètres au contexte métier.",
-            },
-            {
-                client: "PWA Assurance",
-                duration: "1 an",
-                description:
-                    "Migration d'un client lourd Java 8 de paramétrage d'une application de gestion vers une application web AngularJS.",
-            },
-            {
-                client: "Groupama",
-                description:
-                    "Création d'un extranet courtier en Angular 12/13/14 (architecture micro-frontends), back-end microservices Java Spring puis migré vers Micronaut. Gestion de projet en agile.",
-            },
+        bullets: [
+            "Groupama : développé un extranet courtier en Angular 12-14 (architecture micro-frontends), back-end microservices Spring puis Micronaut.",
+            "PWA Assurance (1 an) : migré un client lourd Java 8 de paramétrage vers une application AngularJS.",
+            "Volvo Truck & refonte OCR : finalisé une application back-office .NET, migré un service d'océrisation PDF vers un moteur plus performant.",
         ],
-        stack: [
-            "Angular",
-            "TypeScript",
-            "Java",
-            "Spring",
-            "Micronaut",
-            "Hibernate",
-            "C# / .NET",
-            "Bootstrap",
-            "Git",
-            "JIRA",
-            "Trello",
-        ],
+        stack: "Angular · TypeScript · Java · Spring · Micronaut · Hibernate · C# / .NET",
     },
     {
-        type: "experience",
+        period: "Févr. – Juil. 2019",
         title: "Ingénieur stagiaire",
         organization: "Aubay France",
-        contractType: "Stage",
+        contract: "Stage",
         location: "Boulogne-Billancourt",
-        startDate: "2019-02",
-        endDate: "2019-07",
-        summary:
-            "Conception et développement d'une application intranet en Angular 7 puis 8 avec back-end TypeScript.",
-        highlights: [
-            "Création de composants visuels avancés : carrousel à effet 3D, carte de contact interactive, etc.",
-            "Migration de l'application d'Angular 7 vers Angular 8.",
+        bullets: [
+            "Conçu une application intranet Angular 7 puis 8 ; développé des composants visuels avancés (carrousel 3D, carte de contact interactive).",
         ],
-        stack: ["Angular", "TypeScript", "Ionic", "HTML", "Git", "Trello"],
+        stack: "Angular · TypeScript · Ionic",
     },
     {
-        type: "experience",
-        title: "Développeur web — stagiaire",
+        period: "Janv. – Juil. 2018",
+        title: "Développeur web",
         organization: "EUTECH SSII",
-        contractType: "Stage",
+        contract: "Stage",
         location: "Troyes",
-        startDate: "2018-01",
-        endDate: "2018-07",
-        summary:
-            "Développement complet d'une application web back-office de gestion d'entités en Ruby on Rails, sur l'ensemble du cycle projet.",
-        highlights: [
-            "Rédaction du cahier des charges.",
-            "Développement de l'application.",
-            "Mise en place des tests fonctionnels et de sécurité.",
-            "Mise en production de l'application.",
+        bullets: [
+            "Développé en autonomie une application web back-office en Ruby on Rails, du cahier des charges à la mise en production.",
         ],
-        stack: ["Ruby on Rails", "HTML", "Haml", "Bootstrap"],
+        stack: "Ruby on Rails · HTML · Haml",
     },
 ];
 
 const FORMATION = {
+    period: "2014 – 2018",
     title: "Diplôme d'ingénieur en Informatique et Systèmes d'Information",
     organization: "Université de Technologie de Troyes (UTT)",
-    startDate: "2014-09",
-    endDate: "2018-06",
-    summary: "Spécialisation en management de projet logiciel.",
-    highlights: [
-        "Conception centrée usage des systèmes interactifs",
-        "Prototypage rapide de logiciels",
-        "Méthode « Agiles » et qualité du logiciel",
-        "Architecture orientée services",
-        "Plateformes numériques et économie collaborative",
-    ],
-};
-
-const PROJET_PERSO = {
-    title: "NAS auto-hébergé sur Raspberry Pi",
-    startDate: "2020-01",
     summary:
-        "Mise en place d'un serveur NAS auto-hébergé sur Raspberry Pi avec OpenMediaVault, accessible à distance via OpenVPN.",
-    stack: ["Raspberry Pi", "OpenMediaVault", "OpenVPN", "Linux"],
+        "Spécialisation management de projet logiciel · Conception centrée usage · Architecture orientée services · Méthodes agiles & qualité",
 };
 
-const SKILL_GROUPS = [
-    {
-        label: "Front-end",
-        items: [
-            "Next.js",
-            "React",
-            "TypeScript",
-            "Tailwind CSS",
-            "Angular",
-            "AngularJS",
-            "Bootstrap",
-        ],
-    },
-    {
-        label: "Back-end",
-        items: ["Java", "Spring", "Micronaut", "Jersey", "Hibernate", "PostgreSQL", "C# / .NET"],
-    },
-    { label: "Tests & qualité", items: ["JUnit", "Mockito", "Cypress"] },
-    { label: "Outils & méthodes", items: ["Git", "GitLab", "JIRA", "Trello", "Agile / Scrum"] },
-    { label: "DevOps & infra", items: ["Docker", "GitLab CI", "Linux", "Raspberry Pi"] },
-];
-
-const INTERESTS = [
-    { label: "Ultimate frisbee", description: "Pour l'esprit fair-play et l'auto-arbitrage." },
-    { label: "Dessin", description: "L'occasion d'exercer un autre type de créativité." },
-    { label: "Cinéma & séries", description: "Tout ce qui se raconte en images." },
-    { label: "Jeux vidéo", description: "Pour explorer des univers et décompresser." },
-];
+const PROJET_PERSO_LINE =
+    "NAS auto-hébergé sur Raspberry Pi (depuis 2020) — OpenMediaVault, OpenVPN, Linux.";
+const INTERESTS_LINE = "Ultimate frisbee · Dessin · Cinéma & séries · Jeux vidéo";
 
 // ============================================================================
 // HELPERS
 // ============================================================================
 
-const MONTHS_FR = [
-    "janv.",
-    "févr.",
-    "mars",
-    "avr.",
-    "mai",
-    "juin",
-    "juil.",
-    "août",
-    "sept.",
-    "oct.",
-    "nov.",
-    "déc.",
-];
-
-function formatYearMonth(ym) {
-    const [y, m] = ym.split("-").map(Number);
-    return `${MONTHS_FR[m - 1]} ${y}`;
+function run(text, opts = {}) {
+    return new TextRun({ text, ...opts });
 }
 
-function formatPeriod(start, end) {
-    const startStr = formatYearMonth(start);
-    const endStr = end ? formatYearMonth(end) : "aujourd'hui";
-    return `${startStr} – ${endStr}`;
+/** Paragraphe avec un titre à gauche et une date alignée à droite via tab. */
+function titleAndRightDate(titleRuns, dateText, opts = {}) {
+    return new Paragraph({
+        ...opts,
+        tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
+        children: [
+            ...titleRuns,
+            new TextRun({ children: [new Tab()] }),
+            new TextRun({ text: dateText, italics: true, color: "555555", size: 18 }),
+        ],
+    });
 }
 
-const INDIGO = "4F46E5"; // primary accent
+const A4 = {
+    page: {
+        size: { width: 11906, height: 16838 }, // A4 in twips
+        margin: { top: 720, bottom: 720, left: 1000, right: 1000 },
+    },
+};
+
+const numbering = {
+    config: [
+        {
+            reference: "cv-bullets",
+            levels: [
+                {
+                    level: 0,
+                    format: LevelFormat.BULLET,
+                    text: "•",
+                    alignment: AlignmentType.LEFT,
+                    style: {
+                        paragraph: { indent: { left: 280, hanging: 200 } },
+                    },
+                },
+            ],
+        },
+    ],
+};
 
 // ============================================================================
-// STYLE 1 — CLASSIQUE
+// STYLE 1 — CLASSIQUE (sobriété, accent bleu nuit, dates alignées à droite)
 // ============================================================================
 
 function styleClassique() {
+    const ACCENT = "1E3A8A"; // indigo / bleu nuit
+    const MUTED = "555555";
     const children = [];
 
-    // En-tête
+    // En-tête centré
     children.push(
         new Paragraph({
             alignment: AlignmentType.CENTER,
-            spacing: { after: 80 },
-            children: [new TextRun({ text: PROFILE.name.toUpperCase(), bold: true, size: 40 })],
+            spacing: { after: 60 },
+            children: [run(PROFILE.name.toUpperCase(), { bold: true, size: 36, color: ACCENT })],
         }),
         new Paragraph({
             alignment: AlignmentType.CENTER,
             spacing: { after: 80 },
-            children: [new TextRun({ text: PROFILE.title, size: 24, italics: true })],
+            children: [run(PROFILE.title, { size: 22, italics: true, color: MUTED })],
         }),
         new Paragraph({
             alignment: AlignmentType.CENTER,
             spacing: { after: 60 },
-            children: [
-                new TextRun({
-                    text: `${PROFILE.location}  ·  ${PROFILE.availability}`,
-                    size: 20,
-                }),
-            ],
+            children: [run(`${PROFILE.location}  ·  ${PROFILE.email}`, { size: 18 })],
         }),
         new Paragraph({
             alignment: AlignmentType.CENTER,
-            spacing: { after: 240 },
+            spacing: { after: 40 },
+            border: {
+                bottom: { color: ACCENT, size: 6, style: BorderStyle.SINGLE, space: 6 },
+            },
             children: [
-                new TextRun({
-                    text: `${PROFILE.email}  ·  ${PROFILE.linkedin}  ·  ${PROFILE.github}`,
-                    size: 20,
+                run(`${PROFILE.linkedin}  ·  ${PROFILE.github}  ·  ${PROFILE.availability}`, {
+                    size: 18,
+                    color: MUTED,
                 }),
             ],
         }),
     );
 
-    function sectionTitle(text) {
+    function sectionHeader(text) {
         return new Paragraph({
-            spacing: { before: 200, after: 120 },
-            border: {
-                bottom: { color: "000000", size: 6, style: BorderStyle.SINGLE, space: 4 },
-            },
-            children: [new TextRun({ text: text.toUpperCase(), bold: true, size: 24 })],
+            spacing: { before: 200, after: 100 },
+            children: [run(text.toUpperCase(), { bold: true, size: 22, color: ACCENT })],
         });
     }
 
     // Profil
     children.push(
-        sectionTitle("Profil"),
+        sectionHeader("Profil"),
         new Paragraph({
-            spacing: { after: 120 },
-            children: [new TextRun({ text: PROFIL_SYNTHESE, size: 22 })],
+            spacing: { after: 80 },
+            children: [run(PROFIL_SYNTHESE, { size: 19 })],
         }),
     );
 
-    // Expériences
-    children.push(sectionTitle("Expérience professionnelle"));
-    for (const exp of TIMELINE) {
+    // Compétences (juste après le profil — recommandation tech)
+    children.push(sectionHeader("Compétences"));
+    for (const group of SKILLS) {
         children.push(
             new Paragraph({
-                spacing: { before: 160, after: 40 },
+                spacing: { after: 30 },
                 children: [
-                    new TextRun({
-                        text: `${exp.title} — ${exp.organization}`,
-                        bold: true,
-                        size: 22,
-                    }),
+                    run(`${group.label} : `, { bold: true, size: 18, color: ACCENT }),
+                    run(group.items, { size: 18 }),
                 ],
             }),
+        );
+    }
+
+    // Expériences
+    children.push(sectionHeader("Expérience professionnelle"));
+    for (const exp of EXPERIENCES) {
+        children.push(
+            titleAndRightDate(
+                [
+                    run(`${exp.title}`, { bold: true, size: 20 }),
+                    run(`  —  ${exp.organization}`, { size: 20, color: ACCENT, bold: true }),
+                ],
+                exp.period,
+                { spacing: { before: 140, after: 20 } },
+            ),
             new Paragraph({
-                spacing: { after: 80 },
+                spacing: { after: 60 },
                 children: [
-                    new TextRun({
-                        text: `${formatPeriod(exp.startDate, exp.endDate)}  ·  ${exp.contractType}${exp.location ? `  ·  ${exp.location}` : ""}`,
-                        size: 20,
+                    run(`${exp.contract} · ${exp.location}`, {
+                        size: 17,
                         italics: true,
-                        color: "555555",
+                        color: MUTED,
                     }),
                 ],
-            }),
-            new Paragraph({
-                spacing: { after: 80 },
-                children: [new TextRun({ text: exp.summary, size: 22 })],
             }),
         );
 
-        if (exp.missions) {
-            for (const mission of exp.missions) {
-                children.push(
-                    new Paragraph({
-                        spacing: { before: 60, after: 20 },
-                        indent: { left: 360 },
-                        children: [
-                            new TextRun({
-                                text: `${mission.client}${mission.duration ? ` — ${mission.duration}` : ""}`,
-                                bold: true,
-                                size: 20,
-                            }),
-                        ],
-                    }),
-                    new Paragraph({
-                        spacing: { after: 60 },
-                        indent: { left: 360 },
-                        children: [new TextRun({ text: mission.description, size: 20 })],
-                    }),
-                );
-            }
-        } else if (exp.highlights) {
-            for (const h of exp.highlights) {
-                children.push(
-                    new Paragraph({
-                        bullet: { level: 0 },
-                        spacing: { after: 40 },
-                        children: [new TextRun({ text: h, size: 20 })],
-                    }),
-                );
-            }
+        for (const b of exp.bullets) {
+            children.push(
+                new Paragraph({
+                    numbering: { reference: "cv-bullets", level: 0 },
+                    spacing: { after: 30 },
+                    children: [run(b, { size: 18 })],
+                }),
+            );
         }
 
         children.push(
             new Paragraph({
-                spacing: { before: 80, after: 40 },
+                spacing: { before: 40, after: 40 },
                 children: [
-                    new TextRun({ text: "Stack : ", bold: true, size: 20 }),
-                    new TextRun({ text: exp.stack.join(" · "), size: 20 }),
+                    run("Stack : ", { bold: true, size: 17, color: ACCENT }),
+                    run(exp.stack, { size: 17, color: MUTED }),
                 ],
             }),
         );
@@ -379,99 +277,36 @@ function styleClassique() {
 
     // Formation
     children.push(
-        sectionTitle("Formation"),
-        new Paragraph({
-            spacing: { before: 120, after: 40 },
-            children: [
-                new TextRun({
-                    text: `${FORMATION.title} — ${FORMATION.organization}`,
-                    bold: true,
-                    size: 22,
-                }),
+        sectionHeader("Formation"),
+        titleAndRightDate(
+            [
+                run(FORMATION.title, { bold: true, size: 20 }),
+                run(`  —  ${FORMATION.organization}`, { size: 20, color: ACCENT, bold: true }),
             ],
-        }),
-        new Paragraph({
-            spacing: { after: 80 },
-            children: [
-                new TextRun({
-                    text: formatPeriod(FORMATION.startDate, FORMATION.endDate),
-                    size: 20,
-                    italics: true,
-                    color: "555555",
-                }),
-            ],
-        }),
+            FORMATION.period,
+            { spacing: { before: 60, after: 20 } },
+        ),
         new Paragraph({
             spacing: { after: 60 },
-            children: [new TextRun({ text: FORMATION.summary, size: 22 })],
-        }),
-        new Paragraph({
-            spacing: { after: 40 },
-            children: [new TextRun({ text: "Enseignements spécifiques :", bold: true, size: 20 })],
-        }),
-    );
-    for (const h of FORMATION.highlights) {
-        children.push(
-            new Paragraph({
-                bullet: { level: 0 },
-                spacing: { after: 40 },
-                children: [new TextRun({ text: h, size: 20 })],
-            }),
-        );
-    }
-
-    // Compétences
-    children.push(sectionTitle("Compétences"));
-    for (const group of SKILL_GROUPS) {
-        children.push(
-            new Paragraph({
-                spacing: { before: 60, after: 40 },
-                children: [
-                    new TextRun({ text: `${group.label} : `, bold: true, size: 20 }),
-                    new TextRun({ text: group.items.join(", "), size: 20 }),
-                ],
-            }),
-        );
-    }
-
-    // Projet personnel
-    children.push(
-        sectionTitle("Projet personnel"),
-        new Paragraph({
-            spacing: { before: 120, after: 40 },
-            children: [
-                new TextRun({
-                    text: `${PROJET_PERSO.title}  ·  depuis ${formatYearMonth(PROJET_PERSO.startDate)}`,
-                    bold: true,
-                    size: 22,
-                }),
-            ],
-        }),
-        new Paragraph({
-            spacing: { after: 60 },
-            children: [new TextRun({ text: PROJET_PERSO.summary, size: 22 })],
-        }),
-        new Paragraph({
-            spacing: { after: 40 },
-            children: [
-                new TextRun({ text: "Stack : ", bold: true, size: 20 }),
-                new TextRun({ text: PROJET_PERSO.stack.join(" · "), size: 20 }),
-            ],
+            children: [run(FORMATION.summary, { size: 17, italics: true, color: MUTED })],
         }),
     );
 
-    // Centres d'intérêt
-    children.push(sectionTitle("Centres d'intérêt"));
+    // Projet perso + centres d'intérêt sur une seule ligne
     children.push(
+        sectionHeader("Projet perso & centres d'intérêt"),
         new Paragraph({
-            spacing: { after: 60 },
+            spacing: { after: 30 },
             children: [
-                new TextRun({
-                    text: INTERESTS.map(
-                        (i) => `${i.label} (${i.description.toLowerCase().replace(/\.$/, "")})`,
-                    ).join(" · "),
-                    size: 22,
-                }),
+                run("Projet : ", { bold: true, size: 18, color: ACCENT }),
+                run(PROJET_PERSO_LINE, { size: 18 }),
+            ],
+        }),
+        new Paragraph({
+            spacing: { after: 30 },
+            children: [
+                run("Hors travail : ", { bold: true, size: 18, color: ACCENT }),
+                run(INTERESTS_LINE, { size: 18 }),
             ],
         }),
     );
@@ -480,265 +315,211 @@ function styleClassique() {
         creator: PROFILE.name,
         title: `CV ${PROFILE.name}`,
         styles: { default: { document: { run: { font: "Calibri" } } } },
-        sections: [
-            {
-                properties: {
-                    page: { margin: { top: 720, bottom: 720, left: 1080, right: 1080 } },
-                },
-                children,
-            },
-        ],
+        numbering,
+        sections: [{ properties: A4, children }],
     });
 }
 
 // ============================================================================
-// STYLE 2 — MODERNE 2 COLONNES (avec sidebar)
+// STYLE 2 — MODERNE (sidebar bleu nuit + colonne principale)
 // ============================================================================
 
 function styleModerne() {
-    const sidebarChildren = [];
-    const mainChildren = [];
+    const SIDEBAR_BG = "1E3A8A"; // indigo / bleu nuit
+    const SIDEBAR_TEXT = "FFFFFF";
+    const SIDEBAR_MUTED = "C7D2FE"; // indigo-200
+    const ACCENT = "1E3A8A";
+    const MUTED = "555555";
 
-    // ----- SIDEBAR -----
+    // ---------- SIDEBAR ----------
+    const sidebar = [];
 
-    sidebarChildren.push(
+    sidebar.push(
         new Paragraph({
-            spacing: { after: 120 },
-            children: [new TextRun({ text: "CONTACT", bold: true, size: 22, color: INDIGO })],
-        }),
-        new Paragraph({
-            spacing: { after: 60 },
-            children: [new TextRun({ text: PROFILE.email, size: 18 })],
-        }),
-        new Paragraph({
-            spacing: { after: 60 },
-            children: [new TextRun({ text: PROFILE.location, size: 18 })],
-        }),
-        new Paragraph({
-            spacing: { after: 60 },
-            children: [new TextRun({ text: PROFILE.availability, size: 18, italics: true })],
-        }),
-        new Paragraph({
-            spacing: { after: 60 },
-            children: [new TextRun({ text: PROFILE.linkedin, size: 18 })],
+            spacing: { after: 80 },
+            children: [
+                run(PROFILE.name.split(" ").slice(0, -2).join(" ") || "Thomas", {
+                    bold: true,
+                    size: 32,
+                    color: SIDEBAR_TEXT,
+                }),
+            ],
         }),
         new Paragraph({
             spacing: { after: 240 },
-            children: [new TextRun({ text: PROFILE.github, size: 18 })],
-        }),
-
-        new Paragraph({
-            spacing: { after: 120 },
-            children: [new TextRun({ text: "COMPÉTENCES", bold: true, size: 22, color: INDIGO })],
+            children: [
+                run(PROFILE.name.split(" ").slice(-2).join(" "), {
+                    bold: true,
+                    size: 32,
+                    color: SIDEBAR_TEXT,
+                }),
+            ],
         }),
     );
 
-    for (const group of SKILL_GROUPS) {
-        sidebarChildren.push(
+    function sidebarTitle(text) {
+        return new Paragraph({
+            spacing: { before: 140, after: 80 },
+            border: {
+                bottom: {
+                    color: SIDEBAR_MUTED,
+                    size: 4,
+                    style: BorderStyle.SINGLE,
+                    space: 4,
+                },
+            },
+            children: [
+                run(text.toUpperCase(), {
+                    bold: true,
+                    size: 18,
+                    color: SIDEBAR_TEXT,
+                }),
+            ],
+        });
+    }
+
+    function sidebarLine(label, value) {
+        return [
             new Paragraph({
-                spacing: { before: 80, after: 40 },
-                children: [new TextRun({ text: group.label, bold: true, size: 18 })],
+                spacing: { after: 10 },
+                children: [run(label, { size: 14, color: SIDEBAR_MUTED, bold: true })],
             }),
             new Paragraph({
                 spacing: { after: 80 },
-                children: [new TextRun({ text: group.items.join(", "), size: 18 })],
+                children: [run(value, { size: 16, color: SIDEBAR_TEXT })],
+            }),
+        ];
+    }
+
+    sidebar.push(
+        sidebarTitle("Contact"),
+        ...sidebarLine("EMAIL", PROFILE.email),
+        ...sidebarLine("LIEU", PROFILE.location),
+        ...sidebarLine("LINKEDIN", PROFILE.linkedin),
+        ...sidebarLine("GITHUB", PROFILE.github),
+        ...sidebarLine("DISPONIBILITÉ", PROFILE.availability),
+    );
+
+    sidebar.push(sidebarTitle("Compétences"));
+    for (const group of SKILLS) {
+        sidebar.push(
+            new Paragraph({
+                spacing: { before: 60, after: 10 },
+                children: [
+                    run(group.label.toUpperCase(), { bold: true, size: 14, color: SIDEBAR_MUTED }),
+                ],
+            }),
+            new Paragraph({
+                spacing: { after: 80 },
+                children: [run(group.items, { size: 16, color: SIDEBAR_TEXT })],
             }),
         );
     }
 
-    sidebarChildren.push(
+    sidebar.push(sidebarTitle("Centres d'intérêt"));
+    sidebar.push(
         new Paragraph({
-            spacing: { before: 240, after: 120 },
+            spacing: { after: 80 },
+            children: [run(INTERESTS_LINE, { size: 16, color: SIDEBAR_TEXT })],
+        }),
+    );
+
+    // ---------- COLONNE PRINCIPALE ----------
+    const main = [];
+
+    main.push(
+        new Paragraph({
+            spacing: { after: 60 },
+            children: [run(PROFILE.title, { size: 28, bold: true, color: "111111" })],
+        }),
+        new Paragraph({
+            spacing: { after: 240 },
+            border: {
+                bottom: { color: ACCENT, size: 12, style: BorderStyle.SINGLE, space: 4 },
+            },
             children: [
-                new TextRun({ text: "CENTRES D'INTÉRÊT", bold: true, size: 22, color: INDIGO }),
+                run("INGÉNIEUR FULL-STACK · LYON", {
+                    size: 16,
+                    color: ACCENT,
+                    bold: true,
+                }),
             ],
         }),
     );
 
-    for (const i of INTERESTS) {
-        sidebarChildren.push(
-            new Paragraph({
-                spacing: { after: 40 },
-                children: [
-                    new TextRun({ text: `• ${i.label} `, bold: true, size: 18 }),
-                    new TextRun({ text: `— ${i.description}`, size: 18, italics: true }),
-                ],
-            }),
-        );
+    function mainSection(text) {
+        return new Paragraph({
+            spacing: { before: 200, after: 100 },
+            children: [run(text.toUpperCase(), { bold: true, size: 20, color: ACCENT })],
+        });
     }
 
-    // ----- MAIN COLUMN -----
-
-    mainChildren.push(
-        new Paragraph({
-            spacing: { after: 60 },
-            children: [new TextRun({ text: PROFILE.name, bold: true, size: 44, color: INDIGO })],
-        }),
-        new Paragraph({
-            spacing: { after: 240 },
-            children: [new TextRun({ text: PROFILE.title.toUpperCase(), size: 22 })],
-        }),
-
+    main.push(
+        mainSection("Profil"),
         new Paragraph({
             spacing: { after: 100 },
-            children: [new TextRun({ text: "PROFIL", bold: true, size: 22, color: INDIGO })],
-        }),
-        new Paragraph({
-            spacing: { after: 240 },
-            children: [new TextRun({ text: PROFIL_SYNTHESE, size: 20 })],
-        }),
-
-        new Paragraph({
-            spacing: { after: 100 },
-            children: [new TextRun({ text: "EXPÉRIENCE", bold: true, size: 22, color: INDIGO })],
+            children: [run(PROFIL_SYNTHESE, { size: 18 })],
         }),
     );
 
-    for (const exp of TIMELINE) {
-        mainChildren.push(
-            new Paragraph({
+    main.push(mainSection("Expérience"));
+    for (const exp of EXPERIENCES) {
+        main.push(
+            titleAndRightDate([run(exp.title, { bold: true, size: 20 })], exp.period, {
                 spacing: { before: 120, after: 20 },
-                children: [new TextRun({ text: exp.title, bold: true, size: 22 })],
-            }),
-            new Paragraph({
-                spacing: { after: 40 },
-                children: [
-                    new TextRun({
-                        text: `${exp.organization} · ${exp.contractType}${exp.location ? ` · ${exp.location}` : ""}`,
-                        size: 18,
-                        color: INDIGO,
-                    }),
-                    new TextRun({
-                        text: `   ${formatPeriod(exp.startDate, exp.endDate)}`,
-                        size: 18,
-                        italics: true,
-                        color: "777777",
-                    }),
-                ],
             }),
             new Paragraph({
                 spacing: { after: 60 },
-                children: [new TextRun({ text: exp.summary, size: 20 })],
-            }),
-        );
-
-        if (exp.missions) {
-            for (const mission of exp.missions) {
-                mainChildren.push(
-                    new Paragraph({
-                        bullet: { level: 0 },
-                        spacing: { after: 40 },
-                        children: [
-                            new TextRun({
-                                text: `${mission.client}${mission.duration ? ` (${mission.duration})` : ""} : `,
-                                bold: true,
-                                size: 19,
-                            }),
-                            new TextRun({ text: mission.description, size: 19 }),
-                        ],
-                    }),
-                );
-            }
-        } else if (exp.highlights) {
-            for (const h of exp.highlights) {
-                mainChildren.push(
-                    new Paragraph({
-                        bullet: { level: 0 },
-                        spacing: { after: 40 },
-                        children: [new TextRun({ text: h, size: 19 })],
-                    }),
-                );
-            }
-        }
-
-        mainChildren.push(
-            new Paragraph({
-                spacing: { before: 60, after: 80 },
                 children: [
-                    new TextRun({
-                        text: exp.stack.join(" · "),
-                        size: 18,
-                        italics: true,
-                        color: "666666",
+                    run(`${exp.organization}  ·  ${exp.contract}  ·  ${exp.location}`, {
+                        size: 17,
+                        color: ACCENT,
+                        bold: true,
                     }),
                 ],
             }),
         );
+        for (const b of exp.bullets) {
+            main.push(
+                new Paragraph({
+                    numbering: { reference: "cv-bullets", level: 0 },
+                    spacing: { after: 30 },
+                    children: [run(b, { size: 17 })],
+                }),
+            );
+        }
+        main.push(
+            new Paragraph({
+                spacing: { before: 30, after: 60 },
+                children: [run(exp.stack, { size: 16, italics: true, color: MUTED })],
+            }),
+        );
     }
 
-    mainChildren.push(
-        new Paragraph({
-            spacing: { before: 240, after: 100 },
-            children: [new TextRun({ text: "FORMATION", bold: true, size: 22, color: INDIGO })],
-        }),
-        new Paragraph({
+    main.push(
+        mainSection("Formation"),
+        titleAndRightDate([run(FORMATION.title, { bold: true, size: 20 })], FORMATION.period, {
             spacing: { before: 60, after: 20 },
-            children: [new TextRun({ text: FORMATION.title, bold: true, size: 22 })],
-        }),
-        new Paragraph({
-            spacing: { after: 40 },
-            children: [
-                new TextRun({ text: FORMATION.organization, size: 18, color: INDIGO }),
-                new TextRun({
-                    text: `   ${formatPeriod(FORMATION.startDate, FORMATION.endDate)}`,
-                    size: 18,
-                    italics: true,
-                    color: "777777",
-                }),
-            ],
         }),
         new Paragraph({
             spacing: { after: 60 },
-            children: [new TextRun({ text: FORMATION.summary, size: 20 })],
+            children: [run(FORMATION.organization, { size: 17, color: ACCENT, bold: true })],
         }),
         new Paragraph({
             spacing: { after: 40 },
-            children: [
-                new TextRun({
-                    text: `Enseignements : ${FORMATION.highlights.join(", ")}.`,
-                    size: 19,
-                    italics: true,
-                }),
-            ],
-        }),
-
-        new Paragraph({
-            spacing: { before: 240, after: 100 },
-            children: [
-                new TextRun({ text: "PROJET PERSONNEL", bold: true, size: 22, color: INDIGO }),
-            ],
-        }),
-        new Paragraph({
-            spacing: { before: 60, after: 20 },
-            children: [
-                new TextRun({ text: PROJET_PERSO.title, bold: true, size: 22 }),
-                new TextRun({
-                    text: `   depuis ${formatYearMonth(PROJET_PERSO.startDate)}`,
-                    size: 18,
-                    italics: true,
-                    color: "777777",
-                }),
-            ],
-        }),
-        new Paragraph({
-            spacing: { after: 40 },
-            children: [new TextRun({ text: PROJET_PERSO.summary, size: 20 })],
-        }),
-        new Paragraph({
-            spacing: { after: 40 },
-            children: [
-                new TextRun({
-                    text: PROJET_PERSO.stack.join(" · "),
-                    size: 18,
-                    italics: true,
-                    color: "666666",
-                }),
-            ],
+            children: [run(FORMATION.summary, { size: 16, italics: true, color: MUTED })],
         }),
     );
 
-    // ----- TABLE WRAP -----
+    main.push(
+        mainSection("Projet personnel"),
+        new Paragraph({
+            spacing: { after: 40 },
+            children: [run(PROJET_PERSO_LINE, { size: 18 })],
+        }),
+    );
 
+    // ---------- TABLE WRAP ----------
     const noBorder = { style: BorderStyle.NONE, size: 0, color: "FFFFFF" };
     const borders = {
         top: noBorder,
@@ -749,7 +530,7 @@ function styleModerne() {
         insideVertical: noBorder,
     };
 
-    const sidebarShading = { type: ShadingType.CLEAR, color: "auto", fill: "F5F5F7" };
+    const sidebarShading = { type: ShadingType.CLEAR, color: "auto", fill: SIDEBAR_BG };
 
     const table = new Table({
         layout: TableLayoutType.FIXED,
@@ -757,17 +538,18 @@ function styleModerne() {
         borders,
         rows: [
             new TableRow({
+                cantSplit: true,
                 children: [
                     new TableCell({
                         width: { size: 32, type: WidthType.PERCENTAGE },
-                        margins: { top: 240, bottom: 240, left: 240, right: 240 },
+                        margins: { top: 600, bottom: 600, left: 360, right: 360 },
                         shading: sidebarShading,
-                        children: sidebarChildren,
+                        children: sidebar,
                     }),
                     new TableCell({
                         width: { size: 68, type: WidthType.PERCENTAGE },
-                        margins: { top: 240, bottom: 240, left: 360, right: 240 },
-                        children: mainChildren,
+                        margins: { top: 600, bottom: 600, left: 480, right: 360 },
+                        children: main,
                     }),
                 ],
             }),
@@ -778,10 +560,14 @@ function styleModerne() {
         creator: PROFILE.name,
         title: `CV ${PROFILE.name}`,
         styles: { default: { document: { run: { font: "Calibri" } } } },
+        numbering,
         sections: [
             {
                 properties: {
-                    page: { margin: { top: 0, bottom: 0, left: 0, right: 0 } },
+                    page: {
+                        size: { width: 11906, height: 16838 },
+                        margin: { top: 0, bottom: 0, left: 0, right: 0 },
+                    },
                 },
                 children: [table],
             },
@@ -790,245 +576,147 @@ function styleModerne() {
 }
 
 // ============================================================================
-// STYLE 3 — MINIMALISTE TECH
+// STYLE 3 — MINIMALISTE TECH (barre d'accent en haut, mono sur les sections)
 // ============================================================================
 
 function styleMinimaliste() {
+    const ACCENT = "0F766E"; // teal-700, neutre tech
+    const MUTED = "555555";
+    const FAINT = "888888";
+    const MONO = "Consolas";
+
     const children = [];
 
-    // En-tête compact
+    // Barre d'accent en haut (paragraphe vide avec shading)
     children.push(
         new Paragraph({
-            spacing: { after: 40 },
-            children: [new TextRun({ text: PROFILE.name, bold: true, size: 36 })],
-        }),
-        new Paragraph({
-            spacing: { after: 80 },
-            children: [new TextRun({ text: PROFILE.title, size: 22, color: "555555" })],
-        }),
-        new Paragraph({
-            border: {
-                bottom: { color: "DDDDDD", size: 6, style: BorderStyle.SINGLE, space: 4 },
-            },
+            shading: { type: ShadingType.CLEAR, color: "auto", fill: ACCENT },
             spacing: { after: 200 },
+            children: [run(" ", { size: 4 })],
+        }),
+        // En-tête compact : nom + titre sur une ligne
+        new Paragraph({
+            spacing: { after: 30 },
             children: [
-                new TextRun({
-                    text: `${PROFILE.location}  /  ${PROFILE.availability}  /  ${PROFILE.email}  /  ${PROFILE.linkedin}  /  ${PROFILE.github}`,
-                    size: 18,
-                    color: "666666",
-                }),
+                run(PROFILE.name, { bold: true, size: 32 }),
+                run(`   ${PROFILE.title}`, { size: 18, color: MUTED }),
+            ],
+        }),
+        // Contact en mono, ligne unique
+        new Paragraph({
+            spacing: { after: 60 },
+            border: {
+                bottom: { color: "DDDDDD", size: 4, style: BorderStyle.SINGLE, space: 4 },
+            },
+            children: [
+                run(
+                    `${PROFILE.email}  /  ${PROFILE.location}  /  ${PROFILE.linkedin}  /  ${PROFILE.github}  /  ${PROFILE.availability}`,
+                    { size: 14, font: MONO, color: FAINT },
+                ),
             ],
         }),
     );
 
-    function sectionTitle(text) {
+    function sectionHeader(text) {
         return new Paragraph({
-            spacing: { before: 280, after: 120 },
+            spacing: { before: 240, after: 100 },
             children: [
-                new TextRun({
-                    text: text,
-                    bold: true,
-                    size: 22,
-                    font: "Consolas",
-                    color: "333333",
-                }),
+                run("// ", { size: 18, font: MONO, color: ACCENT, bold: true }),
+                run(text, { size: 18, font: MONO, color: ACCENT, bold: true }),
             ],
         });
     }
 
     children.push(
-        sectionTitle("// Profil"),
+        sectionHeader("profil"),
         new Paragraph({
-            spacing: { after: 100 },
-            children: [new TextRun({ text: PROFIL_SYNTHESE, size: 20 })],
+            spacing: { after: 60 },
+            children: [run(PROFIL_SYNTHESE, { size: 17 })],
         }),
     );
 
-    children.push(sectionTitle("// Expériences"));
-
-    for (const exp of TIMELINE) {
+    children.push(sectionHeader("compétences"));
+    for (const group of SKILLS) {
         children.push(
-            new Paragraph({
-                spacing: { before: 160, after: 30 },
-                children: [
-                    new TextRun({
-                        text: formatPeriod(exp.startDate, exp.endDate),
-                        font: "Consolas",
-                        size: 18,
-                        color: "888888",
-                    }),
-                ],
-            }),
             new Paragraph({
                 spacing: { after: 30 },
                 children: [
-                    new TextRun({ text: exp.title, bold: true, size: 22 }),
-                    new TextRun({
-                        text: `   @ ${exp.organization} · ${exp.contractType}`,
-                        size: 20,
-                        color: "555555",
-                    }),
+                    run(`${group.label.padEnd(18)}  `, { size: 16, font: MONO, color: ACCENT }),
+                    run(group.items, { size: 16 }),
                 ],
             }),
+        );
+    }
+
+    children.push(sectionHeader("expérience"));
+    for (const exp of EXPERIENCES) {
+        children.push(
+            titleAndRightDate(
+                [
+                    run(exp.title, { bold: true, size: 19 }),
+                    run(`  @ ${exp.organization}`, { size: 17, color: ACCENT }),
+                ],
+                exp.period,
+                { spacing: { before: 140, after: 20 } },
+            ),
             new Paragraph({
                 spacing: { after: 60 },
-                children: [new TextRun({ text: exp.summary, size: 20 })],
+                children: [
+                    run(`${exp.contract} · ${exp.location}`, {
+                        size: 14,
+                        color: FAINT,
+                        font: MONO,
+                    }),
+                ],
             }),
         );
-
-        if (exp.missions) {
-            for (const mission of exp.missions) {
-                children.push(
-                    new Paragraph({
-                        spacing: { after: 30 },
-                        children: [
-                            new TextRun({ text: "→ ", color: "888888", size: 19 }),
-                            new TextRun({
-                                text: `${mission.client}${mission.duration ? ` (${mission.duration})` : ""} — `,
-                                bold: true,
-                                size: 19,
-                            }),
-                            new TextRun({ text: mission.description, size: 19 }),
-                        ],
-                    }),
-                );
-            }
-        } else if (exp.highlights) {
-            for (const h of exp.highlights) {
-                children.push(
-                    new Paragraph({
-                        spacing: { after: 30 },
-                        children: [
-                            new TextRun({ text: "→ ", color: "888888", size: 19 }),
-                            new TextRun({ text: h, size: 19 }),
-                        ],
-                    }),
-                );
-            }
+        for (const b of exp.bullets) {
+            children.push(
+                new Paragraph({
+                    spacing: { after: 30 },
+                    indent: { left: 200 },
+                    children: [run("→ ", { size: 17, color: ACCENT }), run(b, { size: 17 })],
+                }),
+            );
         }
-
         children.push(
             new Paragraph({
-                spacing: { before: 60, after: 40 },
-                children: [
-                    new TextRun({
-                        text: exp.stack.join(" · "),
-                        font: "Consolas",
-                        size: 17,
-                        color: "777777",
-                    }),
-                ],
+                spacing: { before: 30, after: 30 },
+                indent: { left: 200 },
+                children: [run(exp.stack, { size: 14, font: MONO, color: FAINT })],
             }),
         );
     }
 
     children.push(
-        sectionTitle("// Formation"),
+        sectionHeader("formation"),
+        titleAndRightDate(
+            [
+                run(FORMATION.title, { bold: true, size: 19 }),
+                run(`  @ ${FORMATION.organization}`, { size: 17, color: ACCENT }),
+            ],
+            FORMATION.period,
+            { spacing: { before: 60, after: 30 } },
+        ),
         new Paragraph({
             spacing: { after: 30 },
-            children: [
-                new TextRun({
-                    text: formatPeriod(FORMATION.startDate, FORMATION.endDate),
-                    font: "Consolas",
-                    size: 18,
-                    color: "888888",
-                }),
-            ],
-        }),
-        new Paragraph({
-            spacing: { after: 30 },
-            children: [
-                new TextRun({ text: FORMATION.title, bold: true, size: 22 }),
-                new TextRun({
-                    text: `   @ ${FORMATION.organization}`,
-                    size: 20,
-                    color: "555555",
-                }),
-            ],
-        }),
-        new Paragraph({
-            spacing: { after: 60 },
-            children: [new TextRun({ text: FORMATION.summary, size: 20 })],
-        }),
-        new Paragraph({
-            spacing: { after: 40 },
-            children: [
-                new TextRun({
-                    text: `Enseignements : ${FORMATION.highlights.join(" · ")}`,
-                    font: "Consolas",
-                    size: 17,
-                    color: "777777",
-                }),
-            ],
+            indent: { left: 200 },
+            children: [run(FORMATION.summary, { size: 14, font: MONO, color: FAINT })],
         }),
     );
 
-    children.push(sectionTitle("// Stack"));
-    for (const group of SKILL_GROUPS) {
-        children.push(
-            new Paragraph({
-                spacing: { after: 30 },
-                children: [
-                    new TextRun({
-                        text: `${group.label.padEnd(22)}`,
-                        font: "Consolas",
-                        size: 17,
-                        color: "888888",
-                    }),
-                    new TextRun({
-                        text: group.items.join(", "),
-                        font: "Consolas",
-                        size: 17,
-                    }),
-                ],
-            }),
-        );
-    }
-
     children.push(
-        sectionTitle("// Projet personnel"),
+        sectionHeader("projet & hobbies"),
         new Paragraph({
-            spacing: { after: 30 },
+            spacing: { after: 20 },
             children: [
-                new TextRun({
-                    text: `depuis ${formatYearMonth(PROJET_PERSO.startDate)}`,
-                    font: "Consolas",
-                    size: 18,
-                    color: "888888",
-                }),
+                run("→ ", { size: 17, color: ACCENT }),
+                run(PROJET_PERSO_LINE, { size: 17 }),
             ],
         }),
         new Paragraph({
-            spacing: { after: 30 },
-            children: [new TextRun({ text: PROJET_PERSO.title, bold: true, size: 22 })],
-        }),
-        new Paragraph({
-            spacing: { after: 40 },
-            children: [new TextRun({ text: PROJET_PERSO.summary, size: 20 })],
-        }),
-        new Paragraph({
-            spacing: { after: 40 },
-            children: [
-                new TextRun({
-                    text: PROJET_PERSO.stack.join(" · "),
-                    font: "Consolas",
-                    size: 17,
-                    color: "777777",
-                }),
-            ],
-        }),
-    );
-
-    children.push(sectionTitle("// Hors travail"));
-    children.push(
-        new Paragraph({
-            spacing: { after: 60 },
-            children: [
-                new TextRun({
-                    text: INTERESTS.map((i) => i.label).join("  ·  "),
-                    size: 20,
-                }),
-            ],
+            spacing: { after: 20 },
+            children: [run("→ ", { size: 17, color: ACCENT }), run(INTERESTS_LINE, { size: 17 })],
         }),
     );
 
@@ -1036,14 +724,8 @@ function styleMinimaliste() {
         creator: PROFILE.name,
         title: `CV ${PROFILE.name}`,
         styles: { default: { document: { run: { font: "Calibri" } } } },
-        sections: [
-            {
-                properties: {
-                    page: { margin: { top: 720, bottom: 720, left: 1080, right: 1080 } },
-                },
-                children,
-            },
-        ],
+        numbering,
+        sections: [{ properties: A4, children }],
     });
 }
 
