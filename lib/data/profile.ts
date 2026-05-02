@@ -29,8 +29,7 @@ export const PROFILE: Profile = {
     location: "Lyon, France",
     availability: "Télétravail privilégié · jusqu'à 2j/semaine sur site",
 
-    // TODO: ton adresse mail (utilisée pour le lien mailto).
-    email: "TODO@example.com",
+    email: "thomas.lescolan@sfr.fr",
 
     // TODO: ajoute /public/profile.jpg (photo carrée, ≥ 320x320px).
     photo: "/profile.jpg",
@@ -44,9 +43,8 @@ export const PROFILE: Profile = {
             href: "https://github.com/ElitX10",
         },
         {
-            // TODO: remplace par l'URL exacte de ton profil LinkedIn.
             label: "LinkedIn",
-            href: "https://www.linkedin.com/in/TODO/",
+            href: "https://www.linkedin.com/in/thomas-le-scolan-642618170/",
         },
     ],
 };

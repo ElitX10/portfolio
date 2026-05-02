@@ -182,13 +182,17 @@ export const TIMELINE: TimelineItem[] = [
         id: "formation-ingenieur",
         type: "formation",
         title: "Diplôme d'ingénieur en Informatique et Systèmes d'Information",
-        // TODO: nom de l'école d'ingénieurs.
-        organization: "TODO: nom de l'école",
-        // TODO: ville de l'école.
-        location: "TODO: ville",
+        organization: "Université de Technologie de Troyes (UTT)",
         startDate: "2014-09",
         endDate: "2018-06",
         summary: "Spécialisation en management de projet logiciel.",
+        highlights: [
+            "Conception centrée usage des systèmes interactifs",
+            "Prototypage rapide de logiciels",
+            "Méthode « Agiles » et qualité du logiciel",
+            "Architecture orientée services",
+            "Plateformes numériques et économie collaborative",
+        ],
         stack: [],
     },
 ];
