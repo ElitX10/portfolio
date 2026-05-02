@@ -16,15 +16,12 @@ export function Hero() {
             />
 
             <div className="mx-auto flex min-h-[calc(100vh-3.5rem)] max-w-5xl flex-col items-start justify-center gap-6 px-4 py-24 sm:px-6 lg:px-8">
-                <p
-                    className={cn(
-                        ENTRY_CLASSES,
-                        "font-mono text-xs tracking-widest text-muted-foreground uppercase",
-                    )}
-                    style={{ animationDelay: "100ms" }}
-                >
-                    Portfolio · {PROFILE.location}
-                </p>
+                <div className={cn(ENTRY_CLASSES)} style={{ animationDelay: "100ms" }}>
+                    <p className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
+                        Portfolio · {PROFILE.location}
+                    </p>
+                    <p className="mt-1.5 text-sm text-muted-foreground">{PROFILE.availability}</p>
+                </div>
 
                 <h1
                     className={cn(

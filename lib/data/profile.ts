@@ -9,6 +9,7 @@ export type Profile = {
     tagline: string;
     bio: string;
     location: string;
+    availability: string;
     email: string;
     photo: string;
     cv: string;
@@ -26,6 +27,7 @@ export const PROFILE: Profile = {
     bio: "TODO: 2 à 3 phrases qui résument ton parcours, tes spécialités et ce qui t'anime aujourd'hui.",
 
     location: "Lyon, France",
+    availability: "Télétravail privilégié · jusqu'à 2j/semaine sur site",
 
     // TODO: ton adresse mail (utilisée pour le lien mailto).
     email: "TODO@example.com",

@@ -76,6 +76,7 @@ export function About() {
                                 {PROFILE.email}
                             </a>
                         </p>
+                        <p className="text-sm text-muted-foreground">{PROFILE.availability}</p>
                     </div>
                 </div>
 
