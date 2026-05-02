@@ -20,7 +20,7 @@ export function Timeline() {
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
     return (
-        <section id="parcours" className="border-t border-border/40 py-20 sm:py-24">
+        <section id="parcours" className="relative border-t border-border/40 py-20 sm:py-24">
             <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                 <header className="mb-14 md:mb-20">
                     <p className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
