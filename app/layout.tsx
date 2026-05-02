@@ -51,14 +51,13 @@ export const metadata: Metadata = {
         siteName: PROFILE.name,
         title: SITE_TITLE,
         description: SITE_DESCRIPTION,
-        // TODO: ajouter une image OG (1200x630) dans /public/og.png et décommenter.
-        // images: [{ url: "/og.png", width: 1200, height: 630, alt: PROFILE.name }],
+        // L'image OG est générée dynamiquement par app/opengraph-image.tsx,
+        // Next y attache automatiquement les meta tags og:image / twitter:image.
     },
     twitter: {
         card: "summary_large_image",
         title: SITE_TITLE,
         description: SITE_DESCRIPTION,
-        // images: ["/og.png"],
     },
     robots: {
         index: true,

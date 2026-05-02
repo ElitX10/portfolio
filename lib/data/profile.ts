@@ -20,8 +20,8 @@ export const PROFILE: Profile = {
     name: "Thomas Le Scolan",
     title: "Ingénieur développement logiciel",
 
-    // TODO: phrase d'accroche affichée sous le titre dans le Hero (1 ligne).
-    tagline: "TODO: une phrase d'accroche qui te ressemble.",
+    tagline:
+        "Full-stack Java + Next.js. Spécialiste de la migration de systèmes legacy vers le web.",
 
     // TODO: petite bio affichée dans la section "À propos" (2-3 phrases).
     bio: "TODO: 2 à 3 phrases qui résument ton parcours, tes spécialités et ce qui t'anime aujourd'hui.",
@@ -34,7 +34,6 @@ export const PROFILE: Profile = {
     // TODO: ajoute /public/profile.jpg (photo carrée, ≥ 320x320px).
     photo: "/profile.jpg",
 
-    // TODO: ajoute /public/cv-thomas-le-scolan.pdf
     cv: "/cv-thomas-le-scolan.pdf",
 
     social: [
