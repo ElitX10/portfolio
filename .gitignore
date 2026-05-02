@@ -31,6 +31,9 @@
 # Claude Code local settings
 .claude/
 
+# CV output (generated docx, à éditer en local)
+/cv/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
