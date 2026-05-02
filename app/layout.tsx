@@ -84,7 +84,7 @@ export default function RootLayout({
         <html
             lang="fr"
             suppressHydrationWarning
-            className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+            className={`${inter.variable} ${jetbrainsMono.variable} relative h-full antialiased`}
         >
             <body className="flex min-h-full flex-col">
                 <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
