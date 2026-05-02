@@ -23,8 +23,7 @@ export const PROFILE: Profile = {
     tagline:
         "Full-stack Java + Next.js. Spécialiste de la migration de systèmes legacy vers le web.",
 
-    // TODO: petite bio affichée dans la section "À propos" (2-3 phrases).
-    bio: "TODO: 2 à 3 phrases qui résument ton parcours, tes spécialités et ce qui t'anime aujourd'hui.",
+    bio: "Au-delà du code, ce qui m'anime c'est de résoudre des problèmes — qu'ils soient purement techniques ou liés au métier. Mon parcours, du stage Ruby on Rails à la migration d'un client lourd Java vers Next.js chez PWA Assurance, m'a fait toucher à toutes les briques : back-end, front-end, tests, DevOps. La constante : partir du besoin réel avant de choisir une solution technique.",
 
     location: "Lyon, France",
     availability: "Télétravail privilégié · jusqu'à 2j/semaine sur site",
