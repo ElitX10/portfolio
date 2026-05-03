@@ -15,7 +15,7 @@ export function Hero() {
                 className="pointer-events-none absolute -top-48 left-1/2 -z-10 h-[28rem] w-[72rem] -translate-x-1/2 rounded-full bg-indigo-500/20 blur-3xl dark:bg-indigo-500/20"
             />
 
-            <div className="mx-auto flex min-h-[calc(100vh-3.5rem)] max-w-5xl flex-col items-start justify-center gap-6 px-4 py-24 sm:px-6 lg:px-8">
+            <div className="mx-auto flex min-h-[calc(100dvh-3.5rem)] max-w-5xl flex-col items-start justify-center gap-6 px-4 py-24 sm:px-6 lg:px-8">
                 <div className={cn(ENTRY_CLASSES)} style={{ animationDelay: "100ms" }}>
                     <p className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
                         Portfolio · {PROFILE.location}

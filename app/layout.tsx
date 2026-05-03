@@ -86,7 +86,7 @@ export default function RootLayout({
             suppressHydrationWarning
             className={`${inter.variable} ${jetbrainsMono.variable} relative h-full antialiased`}
         >
-            <body className="flex min-h-full flex-col">
+            <body className="flex min-h-full w-fit min-w-full flex-col overflow-x-clip">
                 <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
                     <TooltipProvider>
                         <Header />
