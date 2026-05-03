@@ -1,5 +1,8 @@
+"use client";
+
 import { ArrowDown, ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { type CSSProperties, useEffect, useState } from "react";
 
 import { buttonVariants } from "@/components/ui/button";
 import { PROFILE } from "@/lib/data/profile";
@@ -7,15 +10,38 @@ import { cn } from "@/lib/utils";
 
 const ENTRY_CLASSES = "animate-in fade-in-0 slide-in-from-bottom-2 duration-700 fill-mode-both";
 
+/** Hauteur du header (h-14 = 3.5rem = 56px). */
+const HEADER_HEIGHT_PX = 56;
+
 export function Hero() {
+    /**
+     * Le min-height est mesuré côté client via `window.innerHeight`. Sur de
+     * vrais appareils c'est équivalent à `calc(100vh - 3.5rem)` mais certains
+     * setups (Chrome devtools en émulation mobile, certaines extensions) font
+     * mentir les unités CSS de viewport — innerHeight reflète mieux la zone
+     * réellement visible dans ces cas-là.
+     */
+    const [minHeight, setMinHeight] = useState<string>("calc(100vh - 3.5rem)");
+
+    useEffect(() => {
+        const update = () => {
+            setMinHeight(`${window.innerHeight - HEADER_HEIGHT_PX}px`);
+        };
+        update();
+        window.addEventListener("resize", update);
+        return () => window.removeEventListener("resize", update);
+    }, []);
+
+    const sectionStyle: CSSProperties = { minHeight };
+
     return (
-        <section className="relative isolate overflow-hidden">
+        <section className="relative isolate flex flex-col overflow-hidden" style={sectionStyle}>
             <div
                 aria-hidden
                 className="pointer-events-none absolute -top-48 left-1/2 -z-10 h-[28rem] w-[72rem] -translate-x-1/2 rounded-full bg-indigo-500/20 blur-3xl dark:bg-indigo-500/20"
             />
 
-            <div className="mx-auto flex min-h-[calc(100dvh-3.5rem)] max-w-5xl flex-col items-start justify-center gap-6 px-4 py-24 sm:px-6 lg:px-8">
+            <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-start justify-center gap-6 px-4 py-24 sm:px-6 lg:px-8">
                 <div className={cn(ENTRY_CLASSES)} style={{ animationDelay: "100ms" }}>
                     <p className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
                         Portfolio · {PROFILE.location}
